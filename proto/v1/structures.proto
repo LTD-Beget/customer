@@ -1,0 +1,27 @@
+syntax = 'proto3';
+
+package beget.customer.v1.structures;
+
+enum AccountType {
+    PERSON = 0;
+    ORG = 1;
+}
+
+enum ServiceType {
+    UNKNOWN = 0;
+    FREE_HOSTING = 1;
+    VIRTUAL_HOSTING = 2;
+    VIP_HOSTING = 3;
+    DEDICATED_SERVER = 4;
+    DEDICATED_SERVER_NO_ADMIN = 5;
+    VPS = 6;
+    PARKING = 7;
+    BITRIX_HOSTING = 8;
+}
+
+enum Country {
+    RU = 0;
+    UA = 1;
+    EN = 2;
+    DE = 3;
+}
