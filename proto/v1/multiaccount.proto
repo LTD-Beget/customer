@@ -1,0 +1,39 @@
+syntax = 'proto3';
+
+package beget.customer.v1.multiaccount;
+
+import "google/api/annotations.proto";
+import "customer/proto/v1/structures.proto";
+
+service MultiaccountService {
+    //Получить список аккаунтов
+    rpc getList (GetListRequest) returns (GetListResponse) {
+        option (google.api.http) = {
+            get: "/v1/customer/multiaccount"
+        };
+    }
+}
+
+message GetListRequest {
+}
+
+message GetListResponse {
+    repeated Account account = 1;
+
+    message Account {
+        uint32 customer_id = 1;
+        string customer_login = 2;
+        string name = 3;
+        structures.Country country = 4;
+        structures.ServiceType service_type = 5;
+        bool is_primary = 6;
+        string plan_name = 7;
+        double balance = 8;
+        double promised_pay = 9;
+        bool is_deleted = 10;
+        bool is_blocked = 11;
+        bool is_password_changed = 12;
+        uint32 billing_customer_id = 13;
+        bool is_registration_complete = 14;
+    }
+}

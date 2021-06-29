@@ -1,0 +1,26 @@
+syntax = 'proto3';
+
+package beget.customer.v1.info;
+
+import "google/api/annotations.proto";
+import "customer/proto/v1/structures.proto";
+
+service InfoService {
+    //Получить базовую информацию по пользователю
+    rpc getInfo (GetInfoRequest) returns (GetInfoResponse) {
+        option (google.api.http) = {
+            get: "/v1/customer/info"
+        };
+    }
+}
+
+message GetInfoRequest {
+}
+
+message GetInfoResponse {
+    uint32 id = 1;
+    string login = 2;
+    structures.Country country = 3;
+    structures.AccountType account_type = 4;
+    bool is_registration_complete = 5;
+}
