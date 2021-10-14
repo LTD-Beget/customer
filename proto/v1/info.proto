@@ -24,4 +24,5 @@ message GetInfoResponse {
     structures.AccountType account_type = 4;
     bool is_registration_complete = 5;
     structures.ServiceType service_type = 6;
+    string email = 7;
 }
