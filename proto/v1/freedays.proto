@@ -1,0 +1,22 @@
+syntax = 'proto3';
+
+package beget.customer.v1.freedays;
+
+import "google/api/annotations.proto";
+import "customer/proto/v1/structures.proto";
+
+service FreedaysService {
+    rpc setClearingConfirmation (SetClearingConfirmationRequest) returns (SetClearingConfirmationResponse) {
+        option (google.api.http) = {
+            put: "/v1/customer/freedays/clearingConfirmation"
+        };
+    }
+}
+
+message SetClearingConfirmationRequest {
+    bool confirmed = 1;
+}
+
+message SetClearingConfirmationResponse {
+}
+
