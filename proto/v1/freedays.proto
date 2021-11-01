@@ -5,18 +5,17 @@ package beget.customer.v1.freedays;
 import "google/api/annotations.proto";
 import "customer/proto/v1/structures.proto";
 
-service FreedaysService {
-    rpc setClearingConfirmation (SetClearingConfirmationRequest) returns (SetClearingConfirmationResponse) {
+service FreeDaysService {
+    rpc confirmClearing (ConfirmClearingRequest) returns (ConfirmClearingResponse) {
         option (google.api.http) = {
-            put: "/v1/customer/freedays/clearingConfirmation"
+            put: "/v1/customer/freedays/confirmClearing"
         };
     }
 }
 
-message SetClearingConfirmationRequest {
-    bool confirmed = 1;
+message ConfirmClearingRequest {
 }
 
-message SetClearingConfirmationResponse {
+message ConfirmClearingResponse {
 }
 
