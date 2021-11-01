@@ -6,16 +6,16 @@ import "google/api/annotations.proto";
 import "customer/proto/v1/structures.proto";
 
 service FreeDaysService {
-    rpc confirmClearing (ConfirmClearingRequest) returns (ConfirmClearingResponse) {
+    rpc clear (ClearRequest) returns (ClearResponse) {
         option (google.api.http) = {
-            put: "/v1/customer/freedays/confirmClearing"
+            put: "/v1/customer/freedays/clear"
         };
     }
 }
 
-message ConfirmClearingRequest {
+message ClearRequest {
 }
 
-message ConfirmClearingResponse {
+message ClearResponse {
 }
 
