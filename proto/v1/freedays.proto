@@ -3,7 +3,6 @@ syntax = 'proto3';
 package beget.customer.v1.freedays;
 
 import "google/api/annotations.proto";
-import "customer/proto/v1/structures.proto";
 
 service FreeDaysService {
     rpc clear (ClearRequest) returns (ClearResponse) {
