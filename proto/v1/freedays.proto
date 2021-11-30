@@ -1,0 +1,20 @@
+syntax = 'proto3';
+
+package beget.customer.v1.freedays;
+
+import "google/api/annotations.proto";
+
+service FreeDaysService {
+    rpc clear (ClearRequest) returns (ClearResponse) {
+        option (google.api.http) = {
+            put: "/v1/customer/freedays/clear"
+        };
+    }
+}
+
+message ClearRequest {
+}
+
+message ClearResponse {
+}
+
