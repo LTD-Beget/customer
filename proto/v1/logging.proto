@@ -1,0 +1,19 @@
+syntax = 'proto3';
+
+package beget.customer.v1.logging;
+
+import "google/api/annotations.proto";
+
+service LoggingService {
+    rpc logVisit (LogVisitRequest) returns (LogVisitResponse) {
+        option (google.api.http) = {
+            put: "/v1/customer/logging/visit"
+        };
+    };
+}
+
+message LogVisitRequest {
+}
+
+message LogVisitResponse {
+}
