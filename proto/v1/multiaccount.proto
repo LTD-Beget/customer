@@ -38,9 +38,9 @@ service MultiaccountService {
     }
 
     // Изменить отображаемое имя аккаунта
-    rpc updateDisplayName(UpdateDisplayNameRequest) returns (UpdateDisplayNameResponse) {
+    rpc updateName(UpdateNameRequest) returns (UpdateNameResponse) {
         option (google.api.http) = {
-            put: "/v1/customer/multiaccount/{customer_login}/display-name"
+            put: "/v1/customer/multiaccount/{customer_login}/name"
             body: "*"
         };
     }
@@ -62,7 +62,7 @@ message AttachToGroupRequest {
     // Код двухфакторной аутентификации (может быть пустым)
     string code = 3;
     // Отображаемое имя аккаунта в группе (может быть пустым)
-    string display_name = 4;
+    string name = 4;
 }
 
 message AttachToGroupResponse {
@@ -100,7 +100,7 @@ message AttachToGroupResponse {
         // Аккаунт является частью биллинговой группы и не может быть добавлен
         ACCOUNT_IN_BILLING_GROUP = 11;
         // Недопустимое отображаемое имя
-        INVALID_DISPLAY_NAME = 12;
+        INVALID_NAME = 12;
 
         // Требуется дополнительно ввести код безопасности отправленный по email
         CODE_REQUIRED_EMAIL = 20;
@@ -189,14 +189,14 @@ message UpdateChangedPasswordResponse {
     }
 }
 
-message UpdateDisplayNameRequest {
+message UpdateNameRequest {
     // Логин обновляемого аккаунта
     string customer_login = 1;
     // Отображаемое имя аккаунта
-    string display_name = 2;
+    string name = 2;
 }
 
-message UpdateDisplayNameResponse {
+message UpdateNameResponse {
     oneof result {
         // Аккаунт с обновленными данными
         structures.GroupAccount account = 1;
@@ -214,6 +214,6 @@ message UpdateDisplayNameResponse {
     enum ErrorCode {
         _ = 0;
         // Недопустимое отображаемое имя
-        INVALID_DISPLAY_NAME = 1;
+        INVALID_NAME = 1;
     }
 }
