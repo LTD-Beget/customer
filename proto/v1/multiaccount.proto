@@ -5,11 +5,43 @@ package beget.customer.v1.multiaccount;
 import "google/api/annotations.proto";
 import "customer/proto/v1/structures.proto";
 
+// Управление группой подключенных аккаунтов (мультиаккаунт)
 service MultiaccountService {
-    //Получить список аккаунтов
+    // Получить список аккаунтов в группе
     rpc getList (GetListRequest) returns (GetListResponse) {
         option (google.api.http) = {
             get: "/v1/customer/multiaccount"
+        };
+    }
+
+    // Добавить аккаунт в группу
+    rpc attachToGroup(AttachToGroupRequest) returns (AttachToGroupResponse) {
+        option (google.api.http) = {
+            post: "/v1/customer/multiaccount"
+            body: "*"
+        };
+    }
+
+    // Удалить аккаунт из группы
+    rpc detachFromGroup(DetachFromGroupRequest) returns (DetachFromGroupResponse) {
+        option (google.api.http) = {
+            delete: "/v1/customer/multiaccount/{customer_login}"
+        };
+    }
+
+    // Обновить доступ к аккаунту, на котором был изменен пароль
+    rpc updateChangedPassword(UpdateChangedPasswordRequest) returns (UpdateChangedPasswordResponse) {
+        option (google.api.http) = {
+            post: "/v1/customer/multiaccount/{customer_login}/password"
+            body: "*"
+        };
+    }
+
+    // Изменить отображаемое имя аккаунта
+    rpc updateName(UpdateNameRequest) returns (UpdateNameResponse) {
+        option (google.api.http) = {
+            put: "/v1/customer/multiaccount/{customer_login}/name"
+            body: "*"
         };
     }
 }
@@ -18,22 +50,170 @@ message GetListRequest {
 }
 
 message GetListResponse {
-    repeated Account account = 1;
+    // Список аккаунтов подключенных к группе
+    repeated structures.GroupAccount account = 1;
+}
 
-    message Account {
-        uint32 customer_id = 1;
-        string customer_login = 2;
-        string name = 3;
-        structures.Country country = 4;
-        structures.ServiceType service_type = 5;
-        bool is_primary = 6;
-        string plan_name = 7;
-        double balance = 8;
-        double promised_pay = 9;
-        bool is_deleted = 10;
-        bool is_blocked = 11;
-        bool is_password_changed = 12;
-        uint32 billing_customer_id = 13;
-        bool is_registration_complete = 14;
+message AttachToGroupRequest {
+    // Логин подключаемого аккаунта
+    string customer_login = 1;
+    // Пароль подключаемого аккаунта
+    string password = 2;
+    // Код двухфакторной аутентификации (может быть пустым)
+    string code = 3;
+    // Отображаемое имя аккаунта в группе (может быть пустым)
+    string name = 4;
+}
+
+message AttachToGroupResponse {
+    oneof result {
+        // Подключенный аккаунт
+        structures.GroupAccount account = 1;
+        // Ошибка подключения
+        Error error = 2;
+    }
+
+    message Error {
+        // Код ошибки
+        ErrorCode code = 1;
+        // Описание ошибки
+        string message = 2;
+    }
+
+    enum ErrorCode {
+        _ = 0;
+        // Данные от подключаемого аккаунта указаны неверно
+        INCORRECT_CREDENTIALS = 1;
+        // Превышено допустимое количество попыток ввода учётных данных
+        CREDENTIALS_INPUT_LIMIT = 2;
+        // Доступ к подключенному аккаунту не разрешен
+        ACCESS_DENIED = 3;
+        // Неверный код двухфакторной аутентификации
+        INCORRECT_CODE = 4;
+        // Превышен лимит отправки сообщений с кодом двухфакторной аутентификации
+        CODE_SENT_LIMIT = 5;
+        // Превышено допустимое количество попыток ввода кода двухфакторной аутентификации
+        CODE_INPUT_LIMIT = 6;
+
+        // Аккаунт уже добавлен в текущую группу
+        ACCOUNT_ALREADY_ADDED = 10;
+        // Аккаунт является частью биллинговой группы и не может быть добавлен
+        ACCOUNT_IN_BILLING_GROUP = 11;
+        // Недопустимое отображаемое имя
+        INVALID_NAME = 12;
+
+        // Требуется дополнительно ввести код безопасности отправленный по email
+        CODE_REQUIRED_EMAIL = 20;
+        // Требуется дополнительно ввести код безопасности отправленный по sms
+        CODE_REQUIRED_SMS = 21;
+        // Требуется дополнительно ввести код безопасности из приложения-аутентификатора
+        CODE_REQUIRED_TOTP = 22;
+    }
+}
+
+message DetachFromGroupRequest {
+    // Логин отключаемого аккаунта
+    string customer_login = 1;
+}
+
+message DetachFromGroupResponse {
+    oneof result {
+        // Успешный результат
+        Success success = 1;
+        // Ошибка отключения
+        Error error = 2;
+    }
+
+    message Success {
+    }
+
+    message Error {
+        // Код ошибки
+        ErrorCode code = 1;
+        // Описание ошибки
+        string message = 2;
+    }
+
+    enum ErrorCode {
+        _ = 0;
+        // Владелец группы не может быть удален из неё
+        CANNOT_DETACH_MAIN_ACCOUNT = 1;
+    }
+}
+
+message UpdateChangedPasswordRequest {
+    // Логин подключаемого аккаунта
+    string customer_login = 1;
+    // Пароль подключаемого аккаунта
+    string password = 2;
+    // Код двухфакторной аутентификации (может быть пустым)
+    string code = 3;
+}
+
+message UpdateChangedPasswordResponse {
+    oneof result {
+        // Аккаунт с обновленными данными
+        structures.GroupAccount account = 1;
+        // Ошибка обновления пароля
+        Error error = 2;
+    }
+
+    message Error {
+        // Код ошибки
+        ErrorCode code = 1;
+        // Описание ошибки
+        string message = 2;
+    }
+
+    enum ErrorCode {
+        _ = 0;
+        // Данные от подключаемого аккаунта указаны неверно
+        INCORRECT_CREDENTIALS = 1;
+        // Превышено допустимое количество попыток ввода учётных данных
+        CREDENTIALS_INPUT_LIMIT = 2;
+        // Доступ к подключенному аккаунту не разрешен
+        ACCESS_DENIED = 3;
+        // Неверный код двухфакторной аутентификации
+        INCORRECT_CODE = 4;
+        // Превышен лимит отправки сообщений с кодом двухфакторной аутентификации
+        CODE_SENT_LIMIT = 5;
+        // Превышено допустимое количество попыток ввода кода двухфакторной аутентификации
+        CODE_INPUT_LIMIT = 6;
+
+        // Требуется дополнительно ввести код безопасности отправленный по email
+        CODE_REQUIRED_EMAIL = 20;
+        // Требуется дополнительно ввести код безопасности отправленный по sms
+        CODE_REQUIRED_SMS = 21;
+        // Требуется дополнительно ввести код безопасности из приложения-аутентификатора
+        CODE_REQUIRED_TOTP = 22;
+    }
+}
+
+message UpdateNameRequest {
+    // Логин обновляемого аккаунта
+    string customer_login = 1;
+    // Отображаемое имя аккаунта
+    string name = 2;
+}
+
+message UpdateNameResponse {
+    oneof result {
+        // Аккаунт с обновленными данными
+        structures.GroupAccount account = 1;
+        // Ошибка обновления отображаемого имени
+        Error error = 2;
+    }
+
+    message Error {
+        // Код ошибки
+        ErrorCode code = 1;
+        // Описание ошибки
+        string message = 2;
+    }
+
+    enum ErrorCode {
+        _ = 0;
+        // Недопустимое отображаемое имя
+        INVALID_NAME = 1;
     }
 }
