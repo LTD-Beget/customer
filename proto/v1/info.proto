@@ -6,10 +6,17 @@ import "google/api/annotations.proto";
 import "customer/proto/v1/structures.proto";
 
 service InfoService {
-    //Получить базовую информацию по пользователю
+    // Получить базовую информацию по пользователю
     rpc getInfo (GetInfoRequest) returns (GetInfoResponse) {
         option (google.api.http) = {
             get: "/v1/customer/info"
+        };
+    }
+    // Обновить некоторую информацию по пользователю
+    rpc updateInfo (UpdateInfoRequest) returns (UpdateInfoResponse) {
+        option (google.api.http) = {
+            patch: "/v1/customer/info"
+            body: "*"
         };
     }
 }
@@ -18,11 +25,43 @@ message GetInfoRequest {
 }
 
 message GetInfoResponse {
-    uint32 id = 1;
-    string login = 2;
-    structures.Country country = 3;
-    structures.AccountType account_type = 4;
-    bool is_registration_complete = 5;
-    structures.ServiceType service_type = 6;
-    string email = 7;
+    uint32 id = 1 [deprecated = true];
+    string login = 2 [deprecated = true];
+    structures.Country country = 3 [deprecated = true];
+    structures.AccountType account_type = 4 [deprecated = true];
+    bool is_registration_complete = 5 [deprecated = true];
+    structures.ServiceType service_type = 6 [deprecated = true];
+    string email = 7 [deprecated = true];
+    structures.Customer customer = 8;
+}
+
+message UpdateInfoRequest {
+    // контактный email
+    string email = 1;
+}
+
+message UpdateInfoResponse {
+    oneof result {
+        Error error = 1;
+        Success success = 2;
+    }
+
+    message Success {
+        structures.Customer customer = 1;
+    }
+
+    message Error {
+        // Код ошибки
+        ErrorCode code = 1;
+        // Описание ошибки
+        string message = 2;
+    }
+
+    enum ErrorCode {
+        _ = 0;
+        // Обновление поля запрещено
+        FIELD_UPDATE_PROHIBITED = 1;
+        // Некорректное значение
+        INVALID_VALUE = 2;
+    }
 }

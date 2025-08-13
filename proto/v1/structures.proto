@@ -26,6 +26,21 @@ enum Country {
     DE = 3;
 }
 
+message Customer {
+    // Уникальный идентификатор (ID) аккаунта пользователя
+    uint32 id = 1;
+    // Логин аккаунта пользователя
+    string login = 2;
+    // Страна, к которой привязан аккаунт
+    Country country = 3;
+    AccountType account_type = 4;
+    bool is_registration_complete = 5;
+    // Основной тип услуги, используемой в аккаунте
+    ServiceType service_type = 6;
+    // Контактный email
+    string email = 7;
+}
+
 message GroupAccount {
     // Уникальный идентификатор (ID) аккаунта пользователя
     uint32 customer_id = 1;
